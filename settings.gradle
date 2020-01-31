@@ -1,0 +1,2 @@
+include ':app', ':lbslogic'
+rootProject.name='LBSProject'
