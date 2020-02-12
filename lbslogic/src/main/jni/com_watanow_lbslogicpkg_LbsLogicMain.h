@@ -21,7 +21,7 @@ JNIEXPORT jint JNICALL Java_com_watanow_lbslogicpkg_LbsLogicMain_ndkLbsLogic
  * Signature: (Ljava/util/ArrayList;)V
  */
 JNIEXPORT void JNICALL Java_com_watanow_lbslogicpkg_LbsLogicMain_ndkLbsArrayLogic
-  (JNIEnv *, jobject, jobject);
+  (JNIEnv *, jobject, jintArray);
 
 /*
  * Class:     com_watanow_lbslogicpkg_LbsLogicMain

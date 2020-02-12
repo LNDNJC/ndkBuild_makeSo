@@ -8,9 +8,14 @@ public class LbsLogicMain {
         System.loadLibrary("lbslogic");
     }
 
+    public void func()
+    {
+        System.out.println("func");
+    }
+
     public native int ndkLbsLogic(int a, int b);
 
-    public native void ndkLbsArrayLogic(ArrayList<Integer> array);
+    public native void ndkLbsArrayLogic(int []arr);
 
     public native void ndkLbsStringLogic(String str);
 }

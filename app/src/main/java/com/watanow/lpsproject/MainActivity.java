@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         LbsLogicMain nativeApi = new LbsLogicMain();
         int result = nativeApi.ndkLbsLogic(5, 10);
 
-        ArrayList<Integer> arr = new ArrayList<Integer>();
+        int []arr ={1,2,3,4,5};
 
         nativeApi.ndkLbsArrayLogic(arr);
 
@@ -30,8 +30,5 @@ public class MainActivity extends AppCompatActivity {
         Log.d("","result : " + result);
     }
 
-    public void func()
-    {
-        System.out.println("func");
-    }
+
 }
