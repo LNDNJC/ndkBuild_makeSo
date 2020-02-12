@@ -15,6 +15,22 @@ extern "C" {
 JNIEXPORT jint JNICALL Java_com_watanow_lbslogicpkg_LbsLogicMain_ndkLbsLogic
   (JNIEnv *, jobject, jint, jint);
 
+/*
+ * Class:     com_watanow_lbslogicpkg_LbsLogicMain
+ * Method:    ndkLbsArrayLogic
+ * Signature: (Ljava/util/ArrayList;)V
+ */
+JNIEXPORT void JNICALL Java_com_watanow_lbslogicpkg_LbsLogicMain_ndkLbsArrayLogic
+  (JNIEnv *, jobject, jobject);
+
+/*
+ * Class:     com_watanow_lbslogicpkg_LbsLogicMain
+ * Method:    ndkLbsStringLogic
+ * Signature: (Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_com_watanow_lbslogicpkg_LbsLogicMain_ndkLbsStringLogic
+  (JNIEnv *, jobject, jstring);
+
 #ifdef __cplusplus
 }
 #endif

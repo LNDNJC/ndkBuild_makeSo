@@ -7,6 +7,10 @@ import android.util.Log;
 
 import com.watanow.lbslogicpkg.LbsLogicMain;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -17,6 +21,17 @@ public class MainActivity extends AppCompatActivity {
         LbsLogicMain nativeApi = new LbsLogicMain();
         int result = nativeApi.ndkLbsLogic(5, 10);
 
+        ArrayList<Integer> arr = new ArrayList<Integer>();
+
+        nativeApi.ndkLbsArrayLogic(arr);
+
+        nativeApi.ndkLbsStringLogic("Hello");
+
         Log.d("","result : " + result);
+    }
+
+    public void func()
+    {
+        System.out.println("func");
     }
 }
