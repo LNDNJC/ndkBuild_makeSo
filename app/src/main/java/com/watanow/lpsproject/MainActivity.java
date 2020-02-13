@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         nativeApi.getNumString("Hello", 10);
 
         int ret = -1;
-        //ret = nativeApi.startThread();
+        ret = nativeApi.startThread();
 
         Log.d("","result : " + result);
     }
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     {
         super.onStop();
         int ret = -1;
-        //ret = nativeApi.endThread();
+        ret = nativeApi.endThread();
         Log.e("Java", "endThread : " +ret );
     }
 

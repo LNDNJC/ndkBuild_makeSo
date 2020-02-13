@@ -22,6 +22,11 @@ public class LbsLogicMain {
         return "ok";
     }
 
+    public static void callback_for_thread(int i)
+    {
+        Log.e("Java", "callback_for_thread : " + i);
+    }
+
     public native int ndkLbsLogic(int a, int b);
 
     public native void ndkLbsIntArrayLogic(int []arr);

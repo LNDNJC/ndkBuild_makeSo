@@ -6,10 +6,23 @@
 #include <android/log.h>
 #include <stdio.h>
 #include <string.h>
+#include <pthread.h>
+#include <unistd.h>
 #include "com_watanow_lbslogicpkg_LbsLogicMain.h"
 
 #define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__))
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__))
+
+int thr_id;
+int end_flag;
+static const char* classPathName = "com/watanow/lbslogicpkg/LbsLogicMain";
+jclass jObject;
+jmethodID funccb;
+pthread_t p_thread[2];
+
+JavaVM * glpVM = NULL;
+
+void Notify(int i);
 
 jstring getNumString(JNIEnv * a, jobject b, jstring str, jint num)
 {
@@ -22,10 +35,93 @@ jstring getNumString(JNIEnv * a, jobject b, jstring str, jint num)
     //return str;
 }
 
-static const char* classPathName = "com/watanow/lbslogicpkg/LbsLogicMain";
+
+void *t_function(void *data)
+{
+    int id;
+    int i=0;
+    id = *((int *)data);
+
+    while(end_flag)
+    {
+        Notify(i);
+        i++;
+        sleep(1);
+    }
+}
+
+JNIEXPORT jint JNICALL startThread_Native
+        (JNIEnv * env, jobject thiz) {
+
+    end_flag = 1 ;
+    int b = 2 ;
+
+    __android_log_print( ANDROID_LOG_INFO, "NATIVE", "Call start thread" ) ;
+    jclass cls ;
+    cls = env->FindClass(classPathName) ;
+    if ( cls == NULL ) {
+        __android_log_print( ANDROID_LOG_INFO, "NATIVE", "Can't find the class.") ;
+    }
+
+    jObject = (jclass)env->NewGlobalRef( cls ) ;
+    funccb = env->GetStaticMethodID( cls, "callback_for_thread", "(I)V" ) ;
+    if ( funccb == 0 ) {
+        __android_log_print( ANDROID_LOG_INFO, "NATIVE", "Can't find the function." ) ;
+        env->DeleteGlobalRef( jObject ) ;
+    }
+    else {
+        __android_log_print( ANDROID_LOG_INFO, "NATIVE", "Method connect success....\n") ;
+        env->CallStaticVoidMethod( cls, funccb, 10 ) ;
+    }
+
+    thr_id = pthread_create( &p_thread[1], NULL, t_function, (void*)&b ) ;
+    if ( thr_id < 0 ) {
+        __android_log_print( ANDROID_LOG_INFO, "NATIVE", "Create thread fail.\n" ) ;
+        return -1 ;
+    }
+    return 0 ;
+}
+
+JNIEXPORT jint JNICALL endThread_Native
+        (JNIEnv * env, jobject thiz) {
+
+    __android_log_print( ANDROID_LOG_INFO, "NATIVE", "Call end thread" ) ;
+    end_flag = 0 ;
+    return 0 ;
+}
+
+void Notify(int n) {
+    int value = 0 ;
+    value = n ;
+    if ( !glpVM ) {
+        __android_log_print( ANDROID_LOG_INFO, "NATIVE", "error (!glpVM)" ) ;
+        return ;
+    }
+
+    if ( !funccb ) {
+        __android_log_print( ANDROID_LOG_INFO, "NATIVE", "error (!funccb)" ) ;
+        return ;
+    }
+
+    JNIEnv* env = NULL ;
+    glpVM->AttachCurrentThread(  &env, NULL ) ;
+    if ( env == NULL || jObject == NULL ) {
+        glpVM->DetachCurrentThread() ;
+        __android_log_print( ANDROID_LOG_INFO, "NATIVE", "error (env == NULL || AVM_JM.JObject == NULL)" ) ;
+        return ;
+    }
+
+    env->CallStaticVoidMethod(  jObject, funccb, value ) ;
+    glpVM->DetachCurrentThread( ) ;
+}
+
+
+
 
 static JNINativeMethod methods[] = {
         {"getNumString", "(Ljava/lang/String;I)Ljava/lang/String;", (void*)getNumString},
+        {"startThread", "()I", (void*)startThread_Native },
+        {"endThread", "()I", (void*)endThread_Native },
 };
 
 //Register several native methods for one class
@@ -39,7 +135,6 @@ int registerNativeMethods(JNIEnv* env, const char* className, JNINativeMethod* g
         LOGE("Native registration unable to find class '%s'", className);
         return JNI_FALSE;
     }
-
 
     //실제 네이티브와 자바간에 함수를 연결한다.
     if(env->RegisterNatives(clazz, gMethods, numMethods) < 0)
@@ -92,6 +187,8 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved)
     }
 
     result = JNI_VERSION_1_6;
+
+    glpVM = vm;
 
     bail:
     return result;
