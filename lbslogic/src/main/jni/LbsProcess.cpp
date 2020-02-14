@@ -9,6 +9,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include "com_watanow_lbslogicpkg_LbsLogicMain.h"
+#include "LbsMainLogic.h"
 
 #define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__))
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__))
@@ -35,15 +36,16 @@ jstring getNumString(JNIEnv * a, jobject b, jstring str, jint num)
     //return str;
 }
 
-
 void *t_function(void *data)
 {
+    int end_flag = 1;
     int id;
     int i=0;
     id = *((int *)data);
 
     while(end_flag)
     {
+        LbsLogicProcess();
         Notify(i);
         i++;
         sleep(1);

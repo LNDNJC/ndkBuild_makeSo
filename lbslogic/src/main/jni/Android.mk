@@ -4,9 +4,9 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := lbslogic
 
-FILES := LbsProcess.cpp
-
-LOCAL_SRC_FILES := $(FILES)
+LOCAL_SRC_FILES := \
+    LbsProcess.cpp \
+    LbsMainLogic.cpp
 
 LOCAL_LDLIBS :=  -llog
 
